@@ -8,3 +8,16 @@ class DataIngestionConfig:
     unzip_dir: Path
     username: str
     key: str
+
+
+
+@dataclass(frozen=True)
+class ModelTrainerConfig:
+    root_dir: Path
+    train_data_path: Path
+    test_data_path: Path
+    model_path: Path
+    test_size: float
+    batch_size: int
+    epochs: int
+

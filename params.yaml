@@ -1,1 +1,6 @@
-{key:value}
+model_trainer:
+  expected_accuracy: 0.7
+  overfitting_threshold: 0.1
+  test_size: 0.2
+  batch_size: 32
+  epochs: 1

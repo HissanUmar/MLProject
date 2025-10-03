@@ -1,7 +1,7 @@
 import os
 from cnnClassifier.constants import *
 from cnnClassifier.utils.common import read_yaml, create_directories
-from cnnClassifier.entity.config_entity import DataIngestionConfig
+from cnnClassifier.entity.config_entity import DataIngestionConfig, ModelTrainerConfig
 
 
 class ConfigurationManager:
@@ -30,3 +30,21 @@ class ConfigurationManager:
 
         return data_ingestion_config
 
+
+    def get_model_trainer_config(self)-> ModelTrainerConfig:
+        config = self.config.model_trainer
+        params = self.params.model_trainer
+
+        create_directories([config.root_dir])
+
+        model_trainer_config = ModelTrainerConfig(
+            root_dir= config.root_dir,
+            train_data_path= config.train_data_path,
+            test_data_path= config.test_data_path,
+            model_path= config.model_path,
+            test_size = params.test_size,
+            batch_size = params.batch_size,
+            epochs = params.epochs
+        )
+
+        return model_trainer_config
