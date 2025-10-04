@@ -1,1 +1,6 @@
 # MLProject
+
+
+
+export MLFLOW_TRACKING_USERNAME= hissanumar
+export MLFLOW_TRACKING_PASSWORD=f4fdd40f194f219eb2b51aaa3c0aaded45e9141c

@@ -1,4 +1,5 @@
 import pandas as pd
+import mlflow
 import os
 from cnnClassifier import logger
 from cnnClassifier.entity.config_entity import ModelTrainerConfig
@@ -56,19 +57,36 @@ class ModelTrainer:
     
 
     def train_model(self):
-        model = self.build_emotion_model()
-        logger.info("Model architecture created.")
-        history = model.fit(
-        self.train_data,  
-        validation_data = self.val_data,
-        epochs=self.config.epochs,
-        batch_size=self.config.batch_size
-        )
+        
+        with mlflow.start_run():
+            
+            
+            model = self.build_emotion_model()
+            logger.info("Model architecture created.")
+            history = model.fit(
+            self.train_data,  
+            validation_data = self.val_data,
+            epochs=self.config.epochs,
+            batch_size=self.config.batch_size
+            )
 
-        # Save model after training
-        model_path = os.path.join(self.config.root_dir, "emotion_model.h5")
-        model.save(model_path)
-        logger.info(f"Model saved at: {model_path}")
+            # Save model after training
+            model_path = os.path.join(self.config.root_dir, "emotion_model.h5")
+            model.save(model_path)
+            logger.info(f"Model saved at: {model_path}")
+
+            mlflow.log_param("epochs", self.config.epochs)
+            mlflow.log_param("batch_size", self.config.batch_size)
+            mlflow.log_param("learning_rate", 0.0005)
+            mlflow.log_param("optimizer", "Adam")
+            mlflow.log_param("loss_function", "categorical_crossentropy")
+
+            mlflow.log_metric("train_accuracy", history.history['accuracy'][-1])
+            mlflow.log_metric("val_accuracy", history.history['val_accuracy'][-1])
+            mlflow.log_metric("Precision", history.history['precision'][-1])
+            mlflow.log_metric("recall", history.history['recall'][-1])
+            mlflow.log_metric("auc", history.history['auc'][-1])
+
         
     def load_training_data(self):
         datagen = ImageDataGenerator(rescale=1./255, validation_split=0.2)
